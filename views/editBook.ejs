@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Book</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e0f7fa; 
+            color: #006064; 
+        }
+        .form-container {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/header') %>
+    <div class="container form-container">
+        <h1 class="text-center">Edit Book</h1>
+        
+        <% if (errorMessage) { %>
+            <div class="alert alert-danger" role="alert">
+                <%= errorMessage %>
+            </div>
+        <% } %>
+
+        <form action="/admin/bookManagement/edit/<%= book._id %>" method="POST" enctype="multipart/form-data">
+            
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" name="name" value="<%= book.name %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="author">Author:</label>
+                <input type="text" class="form-control" id="author" name="author" value="<%= book.author %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="chapters">Chapters:</label>
+                <input type="number" class="form-control" id="chapters" name="chapters" value="<%= book.chapters %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="synopsis">Synopsis:</label>
+                <textarea class="form-control" id="synopsis" name="synopsis" required><%= book.synopsis %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="regular_price">Regular Price:</label>
+                <input type="number" class="form-control" id="regular_price" name="regular_price" step="0.01" value="<%= book.regular_price %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="sale_price">Sale Price:</label>
+                <input type="number" class="form-control" id="sale_price" name="sale_price" step="0.01" value="<%= book.sale_price %>">
+            </div>
+
+            <div class="form-group">
+                <label for="image1">Image 1:</label>
+                <input type="file" class="form-control-file" id="image1" name="image1" accept="image/*">
+                <% if (book.image1) { %>
+                    <img src="<%= book.image1 %>" alt="Image 1" style="width:100px; margin-top:10px;">
+                <% } %>
+            </div>
+
+            <div class="form-group">
+                <label for="image2">Image 2:</label>
+                <input type="file" class="form-control-file" id="image2" name="image2" accept="image/*">
+                <% if (book.image2) { %>
+                    <img src="<%= book.image2 %>" alt="Image 2" style="width:100px; margin-top:10px;">
+                <% } %>
+            </div>
+
+            <div class="form-group">
+                <label for="image3">Image 3:</label>
+                <input type="file" class="form-control-file" id="image3" name="image3" accept="image/*">
+                <% if (book.image3) { %>
+                    <img src="<%= book.image3 %>" alt="Image 3" style="width:100px; margin-top:10px;">
+                <% } %>
+            </div>
+
+            <div class="form-group">
+                <label for="stock">Stock:</label>
+                <input type="number" class="form-control" id="stock" name="stock" value="<%= book.stock %>" required>
+            </div>
+
+            
+            <div class="form-group">
+                <label for="category1">Category 1:</label>
+                <select class="form-control" id="category1" name="category[]" required>
+                    <option value="">Select Category 1</option>
+                    <% categories.forEach(category => { %>
+                        <option value="<%= category.name %>" <%= book.category[0] === category.name ? 'selected' : '' %>><%= category.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="category2">Category 2 (Optional):</label>
+                <select class="form-control" id="category2" name="category[]">
+                    <option value="">Select Category 2</option>
+                    <% categories.forEach(category => { %>
+                        <option value="<%= category.name %>" <%= book.category[1] === category.name ? 'selected' : '' %>><%= category.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="category3">Category 3 (Optional):</label>
+                <select class="form-control" id="category3" name="category[]">
+                    <option value="">Select Category 3</option>
+                    <% categories.forEach(category => { %>
+                        <option value="<%= category.name %>" <%= book.category[2] === category.name ? 'selected' : '' %>><%= category.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+          
+            <div class="form-group">
+                <label for="related_product1">Related Product 1:</label>
+                <select class="form-control" id="related_product1" name="related_products[]">
+                    <option value="">Select Related Product 1</option>
+                    <% books.forEach(b => { %>
+                        <option value="<%= b._id %>" <%= book.related_products.includes(b._id.toString()) ? 'selected' : '' %>><%= b.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="related_product2">Related Product 2 (Optional):</label>
+                <select class="form-control" id="related_product2" name="related_products[]">
+                    <option value="">Select Related Product 2</option>
+                    <% books.forEach(b => { %>
+                        <option value="<%= b._id %>" <%= book.related_products.includes(b._id.toString()) ? 'selected' : '' %>><%= b.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="related_product3">Related Product 3 (Optional):</label>
+                <select class="form-control" id="related_product3" name="related_products[]">
+                    <option value="">Select Related Product 3</option>
+                    <% books.forEach(b => { %>
+                        <option value="<%= b._id %>" <%= book.related_products.includes(b._id.toString()) ? 'selected' : '' %>><%= b.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaints & Feedback</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 50%; /* You can adjust the width to your preference */
+        }
+
+        .card-header {
+            background-color: #1E90FF;
+            color: white;
+        }
+
+        .delete-button {
+            margin-top: 10px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/header') %>
+    <h2 style="margin-top: 50px;" class="text-center mb-4">Complaints & Feedback</h2>
+    <div class="container mt-5">
+        
+
+        <% feedback.forEach(feedback => { %>
+            <div class="card">
+                <div class="card-header">
+                    <strong><%= feedback.user.first_name %> <%= feedback.user.last_name %></strong>
+                    (<%= feedback.user.username %>)
+                </div>
+                <div class="card-body">
+                    <% if (feedback.feedback) { %>
+                        <p><strong>Feedback:</strong> <%= feedback.feedback %></p>
+                    <% } %>
+                    <% if (feedback.complaint) { %>
+                        <p><strong>Complaint:</strong> <%= feedback.complaint %></p>
+                    <% } %>
+                    <% if (feedback.question) { %>
+                        <p><strong>Question:</strong> <%= feedback.question %></p>
+                    <% } %>
+                </div>
+                <div class="card-footer text-muted">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Submitted on: <%= new Date(feedback.created_at).toLocaleDateString() %></span>
+                        <form action="/admin/feedback/delete" method="POST" onsubmit="return confirmDelete();">
+                            <input type="hidden" name="feedbackId" value="<%= feedback._id %>">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+
+    <script>
+        function confirmDelete() {
+            return confirm('Are you sure you want to delete this feedback?');
+        }
+    </script>
+</body>
+</html>

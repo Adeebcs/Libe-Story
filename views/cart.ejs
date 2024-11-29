@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body { background-color: white; }
+        .cart-title { color: #1E90FF; text-align: center; margin-top: 20px; }
+        .cart-container { display: flex; flex-wrap: wrap; gap: 20px; }
+        .cart-items { flex: 1; max-width: 70%; }
+        .cart-summary { flex: 1; max-width: 30%; padding: 15px; border: 1px solid #1E90FF; border-radius: 5px; background-color: #f8f9fa; }
+        .btn-primary { background-color: #1E90FF; border-color: #1E90FF; }
+        .btn-primary:hover { background-color: #1C7EBE; border-color: #1C7EBE; }
+        .btn-danger { background-color: #dc3545; border-color: #dc3545; }
+        .btn-danger:hover { background-color: #c82333; border-color: #c82333; }
+        .table img { max-width: 50px; height: auto; }
+    </style>
+</head>
+<body>
+    <%- include('partials/header1') %>
+    <div class="container mt-4">
+        <h2 class="cart-title">Your Cart</h2>
+    
+        <!-- Alerts Section -->
+        <% if (alerts && alerts.length > 0) { %>
+            <div class="alert alert-warning">
+                <% alerts.forEach(alert => { %>
+                    <p><%= alert %></p>
+                <% }) %>
+            </div>
+        <% } %>
+    
+        <div class="cart-container">
+            <!-- Cart Items Section -->
+            <div class="cart-items">
+                <% if (cart.items.length > 0) { %>
+                    <% cart.items.forEach(item => { %>
+                        <% if (item.book) { %>
+                            <div class="card mb-3 shadow-sm">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col-3 text-center">
+                                        <img src="<%= item.book.image1 %>" alt="<%= item.book.name %>" class="img-fluid rounded">
+                                    </div>
+                                    <div class="col-9">
+                                        <div class="card-body">
+                                            <% if (item.book.deleted) { %>
+                                                <div class="alert alert-danger">
+                                                    <strong>Note:</strong> This book is no longer available.
+                                                </div>
+                                            <% } %>
+                                            <h5 class="card-title"><%= item.book.name %></h5>
+                                            <p class="card-text">$<%= (item.book.sale_price || item.book.regular_price).toFixed(2) %></p>
+    
+                                            <% if (!item.book.deleted) { %>
+                                                <form action="/cart/update" method="POST" class="form-inline d-flex align-items-center">
+                                                    <input type="hidden" name="itemId" value="<%= item._id %>">
+                                                    <button type="button" class="btn btn-secondary btn-sm" onclick="updateQuantity('<%= item._id %>', -1)">-</button>
+                                                    <input type="number" name="quantity" value="<%= item.quantity %>" min="1" max="6" 
+                                                        class="form-control mx-2" id="quantity-<%= item._id %>" readonly style="width: 50px; text-align: center;">
+                                                    <button type="button" class="btn btn-secondary btn-sm" onclick="updateQuantity('<%= item._id %>', 1)">+</button>
+                                                    <button type="submit" class="btn btn-primary btn-sm ml-2">Update</button>
+                                                </form>
+                                            <% } else { %>
+                                                <p class="text-danger">This book cannot be updated as it is no longer available.</p>
+                                            <% } %>
+                                            
+                                            <div class="d-flex justify-content-between mt-2">
+                                                <span style="margin-top: 10px; display: inline-block; font-weight: bold; font-style: italic;">
+                                                    Subtotal: $<%= (item.quantity * (item.book.sale_price || item.book.regular_price)).toFixed(2) %>
+                                                </span>
+                                                <form action="/cart/remove" method="POST" onsubmit="return confirmDelete();">
+                                                    <input type="hidden" name="itemId" value="<%= item._id %>">
+                                                    <button type="submit" class="btn btn-danger">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } else { %>
+                            <p class="text-center">Item details not available</p>
+                        <% } %>
+                    <% }) %>
+                <% } else { %>
+                    <p class="text-center">Your cart is empty.</p>
+                <% } %>
+            </div>
+    
+            <!-- Order Summary Section -->
+            <div class="cart-summary">
+                <h4 class="text-primary">Order Summary</h4>
+    
+                <div class="d-flex justify-content-between">
+                    <span>Total Items:</span>
+                    <span><%= totalItems %></span>
+                </div>
+                <div class="d-flex justify-content-between mt-2">
+                    <span>Total Price:</span>
+                    <span>$<%= totalPrice.toFixed(2) %></span>
+                </div>
+    
+                <hr>
+    
+                <a href="/cart/proceed-to-checkout" class="btn btn-success btn-block mt-4">Proceed to Checkout</a>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer1') %>
+    <script>
+        function updateQuantity(itemId, change) {
+            const quantityInput = document.getElementById(`quantity-${itemId}`);
+            let currentQuantity = parseInt(quantityInput.value);
+            currentQuantity += change;
+            if (currentQuantity < 1) currentQuantity = 1;
+            if (currentQuantity > 6) {
+                alert('More than 6 quantity is not allowed per person.');
+                return;
+            }
+            quantityInput.value = currentQuantity;
+        }
+
+        function confirmDelete() {
+            return confirm('Are you sure you want to remove this item from your cart?');
+        }
+    </script>
+</body>
+</html>

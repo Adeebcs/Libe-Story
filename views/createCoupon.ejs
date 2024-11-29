@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Coupon</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Create New Coupons</h1>
+
+   
+    <section>
+        <h2>Coupons</h2>
+
+        <h3>Create Product-Specific Coupon</h3>
+        <form action="/admin/offers/product-coupon" method="POST">
+            <div class="form-group">
+                <label for="code">Coupon Code</label>
+                <input type="text" name="code" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="product">Select Product</label>
+                <select name="productSpecific" class="form-control" required>
+                    <% products.forEach(product => { %>
+                        <option value="<%= product._id %>"><%= product.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="discountPercentage">Discount (%)</label>
+                <input type="number" name="discountPercentage" class="form-control" min="0" max="100" required>
+            </div>
+            <div class="form-group">
+                <label for="validFrom">Valid From</label>
+                <input type="date" name="validFrom" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="validUntil">Valid Until</label>
+                <input type="date" name="validUntil" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Product Coupon</button>
+        </form>
+
+        <hr>
+
+
+        <h3>Create Category-Specific Coupon</h3>
+        <form action="/admin/offers/category-coupon" method="POST">
+            <div class="form-group">
+                <label for="code">Coupon Code</label>
+                <input type="text" name="code" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Select Category</label>
+                <select name="categorySpecific" class="form-control" required>
+                    <% categories.forEach(category => { %>
+                        <option value="<%= category._id %>"><%= category.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="discountPercentage">Discount (%)</label>
+                <input type="number" name="discountPercentage" class="form-control" min="0" max="100" required>
+            </div>
+            <div class="form-group">
+                <label for="validFrom">Valid From</label>
+                <input type="date" name="validFrom" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="validUntil">Valid Until</label>
+                <input type="date" name="validUntil" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Category Coupon</button>
+        </form>
+    </section>
+
+    <hr>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - Libes Stories</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .wishlist-section {
+            padding: 60px 0;
+        }
+        .wishlist-section h2 {
+            color: #0087A8;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+        }
+        .wishlist-item {
+            background: white;
+            border: none;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        .wishlist-item h5 {
+            color: #0087A8;
+            font-size: 1.2rem;
+        }
+        .wishlist-item p {
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        .wishlist-item img {
+            width: 100px;
+            margin-right: 15px;
+        }
+        .footer {
+            background-color: #00232b;
+            color: white;
+            padding: 20px 0;
+        }
+        .footer a {
+            color: white;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/header1') %>
+
+    <section class="wishlist-section text-center">
+        <div class="container">
+            <h2>My Wishlist</h2>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <% wishlist.books.forEach(book => { %>
+                        <div class="wishlist-item d-flex align-items-center mb-4">
+                            <img src="<%= book.image1 %>" alt="Book Image">
+                            <div>
+                                <h5><%= book.name %></h5>
+                                <p>Author: <%= book.author %></p>
+                                <p>Price: $<%= book.regular_price %></p>
+                                <form action="/cart/add" method="POST" class="d-inline">
+                                    <input type="hidden" name="bookId" value="<%= book._id %>">
+                                    <button type="submit" class="btn btn-primary btn-sm">Add to Basket</button>
+                                </form>
+                                <form action="/removeFromWishlist" method="POST" class="d-inline" onsubmit="return confirmRemoval()">
+                                    <input type="hidden" name="bookId" value="<%= book._id %>">
+                                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <%- include('partials/footer1') %>
+
+    <script>
+        
+        function confirmRemoval() {
+            return confirm('Are you sure you want to remove this item from your wishlist?');
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

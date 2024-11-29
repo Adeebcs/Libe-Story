@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Support</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <%- include('partials/header1') %>
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Contact Support</li>
+            </ol>
+        </nav>
+
+        <h1 class="mb-4">Contact Support</h1>
+        <p><strong>Address:</strong> 1234 Example St, Citytown, CT 56789</p>
+        <p><strong>Phone Number:</strong> (123) 456-7890</p>
+
+        
+        <div class="col-md-6">
+            <form action="/contact-support" method="POST">
+                <div class="form-group">
+                    <label for="question">Your Question:</label>
+                    <textarea class="form-control" id="question" name="question" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <%- include('partials/footer1') %>
+</body>
+</html>

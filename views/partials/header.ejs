@@ -1,0 +1,76 @@
+<div class="admin-header">
+    <h1 class="admin-title">Admin Panel</h1>
+    <a href="/admin/logout" class="btn btn-light logout-button">Logout</a> 
+</div>
+
+<nav class="admin-nav">
+    <ul>
+        <li><a href="/admin/dashboard">Dashboard</a></li>
+        <li><a href="/admin/bookManagement">Books</a></li>
+        <li><a href="/admin/userslist">Users</a></li>
+        <li><a href="/admin/orders">Orders</a></li> 
+        <li><a href="/admin/offers">Offers</a></li>
+        <li><a href="/admin/inventory">Inventory</a></li>
+        <li><a href="/admin/sales">Sales</a></li> 
+        <li><a href="/admin/best">Best</a></li>
+        <li><a href="/admin/msg">Query</a></li>
+    </ul>
+</nav>
+
+<style>
+    .admin-header {
+        background-color: #008B8B;
+        padding: 10px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .admin-title {
+        font-size: 24px;
+        margin: 0;
+    }
+
+    .logout-button {
+        background-color: #ffffff; 
+        color: #008B8B; 
+        padding: 5px 15px; 
+        border: none; 
+        border-radius: 5px; 
+        text-decoration: none; 
+        font-size: 16px; 
+    }
+
+    .logout-button:hover {
+        background-color: #e0e0e0; 
+    }
+
+    .admin-nav {
+        background-color: #008B8B; 
+        padding: 10px;
+    }
+
+    .admin-nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: 20px;
+        justify-content: center; 
+    }
+
+    .admin-nav ul li {
+        display: inline;
+    }
+
+    .admin-nav ul li a {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+    }
+
+    .admin-nav ul li a:hover {
+        text-decoration: underline;
+    }
+</style>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/path/to/bootstrap.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <%- include('partials/header') %>
+    <div class="container">
+        <h1><%= message %></h1>
+        
+        
+        
+        <div class="mt-4">
+            <label for="salesFilter" class="form-label">Sales :</label>
+            <select id="salesFilter" class="form-select" onchange="fetchSalesData()">
+                <option value="1day">1 Day</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+            </select>
+        </div>
+
+        
+        <div class="mt-4" style="width: 80%; height: 300px; margin: auto;">
+            <canvas id="salesChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let salesChart;
+    
+        async function fetchSalesData() {
+            const filter = document.getElementById('salesFilter').value;
+            const response = await fetch(`/admin/sales-data?filter=${filter}`);
+            const data = await response.json();
+    
+            if (salesChart) {
+                salesChart.destroy();
+            }
+    
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            salesChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels, 
+                    datasets: [{
+                        label: 'Sales Amount',
+                        data: data.values,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Time' },
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 90, 
+                            }
+                        },
+                        y: {
+                            title: { display: true, text: 'Sales Amount' }
+                        }
+                    }
+                }
+            });
+        }
+    
+        fetchSalesData();
+    </script>
+</body>
+</html>

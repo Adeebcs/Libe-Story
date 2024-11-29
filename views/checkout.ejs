@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: white;
+        }
+        h2 {
+            color: #1E90FF;
+            text-align: center;
+            margin-top: 20px;
+        }
+        h3, h4 {
+            color: #1E90FF;
+        }
+        .btn-success {
+            background-color: #1E90FF;
+            border-color: #1E90FF;
+        }
+        .btn-success:hover {
+            background-color: #1C7EBE;
+            border-color: #1C7EBE;
+        }
+        .btn-secondary {
+            background-color: #1C7EBE;
+            border-color: #1C7EBE;
+        }
+        .cart-summary {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #1E90FF;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/header1') %>
+<div class="container mt-4">
+    <h2>Checkout</h2>
+
+    <form action="<%= isRetry ? '/checkout/again' : '/checkout' %>" method="POST" id="checkoutForm">
+
+        <h3>Payment Method</h3>
+        <div class="form-group">
+            <label for="payment">Choose payment method:</label>
+            <select name="payment" id="payment" class="form-control" required>
+                <option value="Pay on Delivery" <% if (totalPrice > 100) { %>disabled<% } %>>Pay on Delivery</option>
+                <option value="Online Payment">Online Payment</option>
+                <option value="Wallet Pay">Wallet Pay</option>
+            </select>
+            <% if (totalPrice > 100) { %>
+                <small class="text-danger">Pay on Delivery is not available for orders above ₹100.</small>
+            <% } %>
+        </div>
+    
+        <h3>Select Delivery Address</h3>
+        <div class="form-group">
+            <label for="address">Choose address:</label>
+            <select name="address" id="address" class="form-control" required>
+                <% if (user.addresses && user.addresses.length > 0) { %>
+                    <% user.addresses.forEach(function(address) { %>
+                        <option value="<%= address._id %>">
+                            <%= address.name %> - <%= address.house_number %>, <%= address.street %>, 
+                            <%= address.city %>, <%= address.state %>, 
+                            <%= address.country %>, <%= address.postal_code %>
+                        </option>
+                    <% }) %>
+                <% } else { %>
+                    <option value="">No addresses available</option>
+                <% } %>
+            </select>
+        </div>
+    
+        <div class="form-group">
+            <a href="/settings/address/new" class="btn btn-secondary">Add New Address</a>
+        </div>
+    
+        <h3>Contact Number</h3>
+        <div class="form-group">
+            <label for="phone">Phone Number for Delivery:</label>
+            <input type="text" name="phone" id="phone" class="form-control" required value="<%= phone %>">
+        </div>
+    
+        <!-- Display Wallet Balance -->
+        <div class="form-group">
+            <h4>Wallet Balance: ₹<%= user.wallet.toFixed(2) %></h4> 
+        </div>
+    
+        <div class="cart-summary">
+            <h4>Total Items: <%= totalItems %></h4>
+            <h4>Total Price: ₹<%= totalPrice.toFixed(2) %></h4> 
+        </div>
+    
+        <% if (isRetry) { %>
+            <button type="submit" class="btn btn-warning btn-block mt-4">Retry Payment</button>
+        <% } else { %>
+            <button type="submit" class="btn btn-success btn-block mt-4">Proceed</button>
+        <% } %>
+    
+    </form>
+    
+</div>
+
+<%- include('partials/footer1') %>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    document.getElementById('checkoutForm').addEventListener('submit', function (e) {
+        const paymentMethod = document.getElementById('payment').value;
+        const totalPrice = parseFloat('<%= totalPrice %>');
+
+        if (paymentMethod === 'Pay on Delivery' && totalPrice > 100) {
+            e.preventDefault();
+            alert('Pay on Delivery is not available for orders above ₹100.');
+        }
+    });
+    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+        const paymentMethod = document.getElementById('payment').value;
+    
+        if (paymentMethod === 'Online Payment') {
+            e.preventDefault();  
+    
+            var options = {
+                "key": "<%= RAZORPAY_KEY_ID %>", 
+                "amount": "<%= totalPrice * 100 %>", 
+                "currency": "INR",
+                "name": "Online Bookstore",
+                "description": "Test Transaction",
+                "handler": function(response) {
+                  
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'razorpay_payment_id',
+                        value: response.razorpay_payment_id
+                    }).appendTo('#checkoutForm');
+    
+            
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'paymentStatus',
+                        value: 'Success'
+                    }).appendTo('#checkoutForm');
+    
+                    $('#checkoutForm').off('submit').submit(); 
+                },
+                "prefill": {
+                    "email": "<%= user.email %>",
+                    "contact": "<%= phone %>" 
+                },
+                "theme": {
+                    "color": "#1E90FF"
+                }
+            };
+    
+            var rzp = new Razorpay(options);
+    
+      
+            rzp.on('payment.failed', function (response) {
+             
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'paymentStatus',
+                    value: 'Failed'
+                }).appendTo('#checkoutForm');
+    
+            
+                $('#checkoutForm').off('submit').submit();
+            });
+    
+            
+            rzp.open();
+        }
+    });
+    </script>
+
+</body>
+</html>

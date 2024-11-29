@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best Sellers</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f7f9fc; 
+        }
+        .header {
+            background-color: #1E90FF; 
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .table {
+            border: 2px solid #367a3d; 
+        }
+        .thead {
+            background-color: #1E90FF; 
+            color: white;
+        }
+        .thead th {
+            border-color: #1E90FF; 
+        }
+        .btn-primary {
+            background-color: #1E90FF; 
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #1E90FF; 
+        }
+        .btn-danger {
+            background-color: #dc3545; 
+            border: none;
+        }
+        .btn-danger:hover {
+            background-color: #c82333; 
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/header') %>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Best Sellers</h1>
+
+       
+<h2 style="margin-top: 30px; color: #1E90FF;">Top 5 Best-Selling Books</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Book Name</th>
+            <th>Quantity Sold</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% bestBooks.forEach(book => { %>
+            <tr>
+                <td><%= book.book.name %></td> 
+                <td><%= book.totalQuantity %></td>
+            </tr>
+        <% }) %>
+    </tbody>
+</table>
+
+      
+<h2 style="margin-top: 50px; color: #1E90FF;">Top 5 Best-Selling Categories</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Quantity Sold</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% bestCategories.forEach(category => { %>
+            <tr>
+                <td><%= category.category.name %></td> 
+                <td><%= category.totalQuantity %></td>
+            </tr>
+        <% }) %>
+    </tbody>
+</table>
+
+        
+        <h2 style="margin-top: 50px; color: #1E90FF;">Top 5 Best-Selling Authors</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Author Name</th>
+                    <th>Quantity Sold</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% bestAuthors.forEach(author => { %>
+                    <tr>
+                        <td><%= author._id %></td> 
+                        <td><%= author.totalQuantity %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

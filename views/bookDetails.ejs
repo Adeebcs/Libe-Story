@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= book.name %> - Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        
+        .small-img-container {
+            display: flex;
+            gap: 10px;
+        }
+        .small-img {
+            width: 100px;
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .small-img:hover {
+            transform: scale(4);
+        }
+
+
+        .review-box {
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .review-box strong {
+            font-size: 1.1rem;
+        }
+        .review-box .text-warning {
+            font-size: 1.2rem;
+        }
+        .review-box p {
+            margin: 5px 0 0;
+        }
+
+   
+        .comment-form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #f0f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .comment-form-container h4 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('partials/header1') %>
+
+    <div class="container mt-5">
+        
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                <li class="breadcrumb-item"><a href="/products">Explore</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><%= book.name %></li>
+            </ol>
+        </nav>
+
+        <div class="row">
+           
+            <div class="col-md-4">
+                <img src="<%= book.image1 %>" class="img-fluid mb-3" alt="<%= book.name %>">
+                <div class="small-img-container">
+                    <img src="<%= book.image2 %>" class="small-img" alt="<%= book.name %> Image 2">
+                    <img src="<%= book.image3 %>" class="small-img" alt="<%= book.name %> Image 3">
+                </div>
+            </div>
+
+
+            <div class="col-md-8">
+                <h1><%= book.name %></h1>
+                <p>Author: <%= book.author %></p>
+                <p>Category: <%= book.category.join(', ') %></p>
+
+                <% if (book.sale_price) { %>
+                    <h4>Sale Price: $<%= book.sale_price.toFixed(2) %></h4>
+                <% } %>
+
+     
+                <h4 class="mt-4">Apply Coupon Code</h4>
+                <form action="/books/<%= book._id %>/apply-coupon" method="POST" id="couponForm">
+                    <div class="form-group" style="max-width: 200px;">
+                        <input type="text" class="form-control" style="width: 100%;" name="couponCode" placeholder="Enter Coupon Code" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                </form>
+                
+
+
+            
+                <div class="d-flex mb-3">
+                    <div class="text-warning mr-3">
+                        <% for (let i = 0; i < Math.floor(book.ratings); i++) { %>
+                            <span>&#9733;</span>
+                        <% } %>
+                        <% for (let i = 0; i < 5 - Math.floor(book.ratings); i++) { %>
+                            <span>&#9734;</span>
+                        <% } %>
+                    </div>
+                    <span><%= book.ratings %>/5</span>
+                </div>
+
+                <form action="/cart/add" method="POST">
+                    <input type="hidden" name="bookId" value="<%= book._id %>">
+                    <button type="submit" class="btn btn-primary mb-3">Add to Basket</button>
+                </form>
+                <form action="/wishlist/add" method="POST">
+                    <input type="hidden" name="bookId" value="<%= book._id %>">
+                    <button type="submit" class="btn btn-secondary mb-3">Add to Wishlist</button>
+                </form>
+
+                <p><strong>Stock:</strong> <% if (book.stock > 0) { %> In Stock <% } else { %> Out of Stock <% } %></p>
+                <p><strong>Synopsis:</strong> <%= book.synopsis %></p>
+
+                <p><strong>Highlights:</strong></p>
+                <ul>
+                    <% if (book.highlights && book.highlights.length > 0) { %>
+                        <% book.highlights.forEach(highlight => { %>
+                            <li><%= highlight %></li>
+                        <% }) %>
+                    <% } else { %>
+                        <li>No highlights available.</li>
+                    <% } %>
+                </ul>
+
+             
+                <h3>Reviews</h3>
+                <div>
+                    <% if (book.review && book.review.length > 0) { %>
+                        <% book.review.forEach(rev => { %>
+                            <div class="review-box">
+                                <strong><%= rev.username %>:</strong>
+                                <div class="text-warning">
+                                    <% for (let i = 0; i < rev.rating; i++) { %>
+                                        <span>&#9733;</span>
+                                    <% } %>
+                                    <% for (let i = 0; i < 5 - rev.rating; i++) { %>
+                                        <span>&#9734;</span>
+                                    <% } %>
+                                </div>
+                                <p><%= rev.comment %></p>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p>No reviews yet.</p>
+                    <% } %>
+                </div>
+
+               
+                <div class="comment-form-container mt-5">
+                    <h4>Add Comment</h4>
+                    <form action="/books/<%= book._id %>/comment" method="POST">
+                        <div class="form-group">
+                            <label for="rating">Rating</label>
+                            <select class="form-control" id="rating" name="rating">
+                                <option value="5">5 - Excellent</option>
+                                <option value="4">4 - Good</option>
+                                <option value="3">3 - Average</option>
+                                <option value="2">2 - Below Average</option>
+                                <option value="1">1 - Poor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="comment">Comment</label>
+                            <textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer1') %>
+</body>
+</html>

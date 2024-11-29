@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Inventory Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: white;
+        }
+        h1 {
+            color: #1E90FF;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .btn-primary {
+            background-color: #1E90FF;
+            border-color: #1E90FF;
+        }
+        .btn-primary:hover {
+            background-color: #1C7EBE;
+            border-color: #1C7EBE;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/header') %>
+    <h1>Inventory Management</h1>
+    
+    <div class="container mt-4">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-light">
+                <tr>
+                    <th>Book Name</th>
+                    <th>Stock</th>
+                    <th>Regular Price</th>
+                    <th>Sale Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% books.forEach(book => { %>
+                    <tr>
+                        <td><%= book.name %></td>
+                        <td><%= book.stock %></td>
+                        <td>$<%= book.regular_price.toFixed(2) %></td>
+                        <td><%= book.sale_price ? '$' + book.sale_price.toFixed(2) : 'N/A' %></td>
+                        <td>
+                            <form action="/admin/inventory/update-stock" method="POST" class="form-inline">
+                                <input type="hidden" name="bookId" value="<%= book._id %>">
+                                <input type="number" name="newStock" value="<%= book.stock %>" min="0" required class="form-control mr-2">
+                                <button type="submit" class="btn btn-primary btn-sm">Update Stock</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

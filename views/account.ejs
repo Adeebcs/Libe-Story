@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Libes Stories</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .account-section {
+            padding: 60px 0;
+        }
+        .account-section h2 {
+            color: #0087A8;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+        }
+        .account-card {
+            background: white;
+            border: none;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #0087A8;
+            border-radius: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .account-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .account-card h5 {
+            color: #0087A8;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        .account-card p {
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        .account-card .btn {
+            background-color: #0087A8;
+            color: white;
+        }
+        .account-card .btn:hover {
+            background-color: #005f7a;
+        }
+        .sticky-card {
+            position: sticky;
+            top: 20px;
+        }
+        .footer {
+            background-color: #00232b;
+            color: white;
+            padding: 20px 0;
+        }
+        .footer a {
+            color: white;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <%- include('partials/header1') %>
+
+    <section class="account-section">
+        <div class="container">
+            <div class="row">
+               
+                <div class="col-lg-8">
+                    <h2 class="text-center">My Account</h2>
+                    <div class="row">
+                        <% const actions = [
+                            { title: 'My Wallet', desc: 'Manage your wallet and payment options.', link: '/wallet', icon: '/assets/wallet-icon.png' },
+                            { title: 'My Wishlist', desc: 'See your favorite products in one place.', link: '/wishlist', icon: '/assets/wishlist-icon.png' },
+                            { title: 'My Basket', desc: 'Select and proceed to checkout.', link: '/cart', icon: '/assets/basket-icon.png' },
+                            { title: 'My Orders', desc: 'Track your orders and delivery status.', link: '/orders', icon: '/assets/orders-icon.png' },
+                            { title: 'Complaints & Feedback', desc: 'Submit your complaints and feedback.', link: '/submit-feedback', icon: '/assets/feedback-icon.png' },
+                            { title: 'User Settings', desc: 'Update your profile and account settings.', link: '/settings', icon: '/assets/settings-icon.png' },
+                            { title: 'Change Password', desc: 'Update your account password.', link: '/change-password', icon: '/assets/password-icon.png' },
+                            { title: 'Contact Us', desc: 'Reach out for any inquiries.', link: '/contact-support', icon: '/assets/contact-icon.png' },
+                            { title: 'Offer Center', desc: 'Check out the latest offers and deals.', link: '/offers', icon: '/assets/offers-icon.png' },
+                            { title: 'Delete Account', desc: 'Permanently delete your account.', link: '/deleteAccount', btnClass: 'btn-danger', icon: '/assets/delete-icon.png' }
+                        ]; %>
+                        <% actions.forEach(action => { %>
+                        <div class="col-md-4 mb-4">
+                            <div class="account-card text-center">
+                                <img src="<%= action.icon %>" alt="<%= action.title %>" style="width: 50px; height: 50px;" class="mb-2">
+                                <h5><%= action.title %></h5>
+                                <p><%= action.desc %></p>
+                                <a href="<%= action.link %>" class="btn <%= action.btnClass || 'btn-primary' %>">
+                                    <%= action.title.includes('Delete') ? 'Delete' : 'View' %>
+                                </a>
+                            </div>
+                        </div>
+                        <% }) %>
+                    </div>
+                </div>
+                
+
+            
+                <div class="col-lg-4">
+                    <div class="card sticky-card mb-5" style="background-color: #e3f2fd; margin-top: 60px;">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Profile</h5>
+                        </div>
+                        <div class="card-body text-left">
+                            <p><strong>First Name:</strong> <%= user.first_name %></p>
+                            <p><strong>Last Name:</strong> <%= user.last_name %></p>
+                            <p><strong>Email:</strong> <%= user.email %></p>
+                            <p><strong>Phone:</strong> <%= user.phone %></p>
+                            <p><strong>Wallet Balance:</strong> $<%= user.wallet %></p>
+                            <p><strong>Referral Code:</strong> <%= user.referralCode %></p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <%- include('partials/footer1') %>  
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

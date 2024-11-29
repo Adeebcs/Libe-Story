@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Books</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+ 
+    <%- include('partials/header1') %>
+
+
+
+    <div class="container mt-5">
+       
+        <div class="row mb-4">
+            <div class="col-12">
+                <form class="form-inline" action="/search" method="get">
+                    <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search in Library" aria-label="Search" value="<%= q || '' %>">
+                    
+                 
+                    <input type="hidden" name="category" value="<%= categorySelected %>">
+                    <input type="hidden" name="sort" value="<%= sort %>">
+
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Filter and Sort -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <form id="filterSortForm" action="/products" method="get">
+                    <input type="hidden" name="q" value="<%= q || '' %>"> <!-- Preserve search query -->
+
+                    <div class="row">
+                        <div class="col-6">
+                            <select name="category" class="form-control" onchange="document.getElementById('filterSortForm').submit()">
+                                <option value="">Filter by Category</option>
+                                <% categories.forEach(category => { %>
+                                    <option value="<%= category.name %>" <%= category.name === categorySelected ? 'selected' : '' %>><%= category.name %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <select name="sort" class="form-control" onchange="document.getElementById('filterSortForm').submit()">
+                                <option value="">Sort By</option>
+                                <option value="priceLowToHigh" <%= sort === 'priceLowToHigh' ? 'selected' : '' %>>Price: Low to High</option>
+                                <option value="priceHighToLow" <%= sort === 'priceHighToLow' ? 'selected' : '' %>>Price: High to Low</option>
+                                <option value="popularity" <%= sort === 'popularity' ? 'selected' : '' %>>Popularity</option>
+                                <option value="ratings" <%= sort === 'ratings' ? 'selected' : '' %>>Ratings</option>
+                                <option value="az" <%= sort === 'az' ? 'selected' : '' %>>A-Z</option>
+                                <option value="za" <%= sort === 'za' ? 'selected' : '' %>>Z-A</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+       
+        <div class="row">
+            <% if (books.length > 0) { %>
+                <% books.forEach(book => { %>
+                    <div class="col-sm-2">
+                        <a href="/book/<%= book._id %>">
+                            <div class="card mb-4">
+                                <img class="card-img-top" src="<%= book.image1 %>" alt="<%= book.name %>">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title"><%= book.name %></h5>
+                                    <p class="card-text"><%= book.author %></p>
+                                    <p class="card-text">₹<%= book.regular_price %></p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="col-12">
+                    <p>No products found for "<%= q %>". Please try a different search.</p>
+                </div>
+            <% } %>
+        </div>
+        
+    </div>
+
+    <%- include('partials/footer1') %>
+
+
+</body>
+</html>

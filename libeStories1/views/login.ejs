@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome</h1>
+        <p>Login to see details</p>
+        <h4 class="textmsg"><%= msg %></h4>
+        <form action="/verify" method="post">
+            <label for="username">Username or Email</label>
+            <input type="text" id="username" name="username" placeholder="Username or Email">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="********">
+            <button type="submit">LOG IN</button>
+        </form>
+        <p>Don't have an account?</p>
+        <form action="/signup" method="get">
+            <button type="submit">SIGN UP</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .sales-report-container {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .download-options {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/header') %>
+    <div class="container sales-report-container">
+        <h1 class="my-4">Sales Report</h1>
+        
+        <div class="filter-options mb-4">
+            <form action="/admin/sales" method="get">
+                <label for="filter">Filter By:</label>
+                <select name="filter" id="filter" class="form-control d-inline-block w-auto">
+                    <option value="daily" <% if (filter === 'daily') { %>selected<% } %>>1 Day</option>
+                    <option value="weekly" <% if (filter === 'weekly') { %>selected<% } %>>1 Week</option>
+                    <option value="monthly" <% if (filter === 'monthly') { %>selected<% } %>>1 Month</option>
+                    <option value="custom" <% if (filter === 'custom') { %>selected<% } %>>Custom Date Range</option>
+                </select>
+
+                <div id="custom-date-range" style="display: <% if (filter === 'custom') { %>block<% } else { %>none<% } %>;">
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" name="startDate" id="startDate" class="form-control" value="<%= startDate || '' %>">
+                    <label for="endDate">End Date:</label>
+                    <input type="date" name="endDate" id="endDate" class="form-control" value="<%= endDate || '' %>">
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-2">Apply Filter</button>
+            </form>
+        </div>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>User Name</th> <!-- New column for User Name -->
+                    <th>Total Items Purchased</th> <!-- New column for Total Items Purchased -->
+                    <th>Total Amount</th>
+                    <th>Discount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (salesReport.length > 0) { %>
+                    <% salesReport.forEach(report => { %>
+                        <tr>
+                            <td><%= report.date %></td>
+                            <td><%= report.userName %></td>
+                            <td><%= report.totalItemsPurchased %></td>
+                            <td>$<%= report.totalAmount.toFixed(2) %></td>
+                            <td>$<%= report.couponDeductions.toFixed(2) %></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="5">No sales data found for this period.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+
+       
+
+        <% if (salesReport.length > 0) { %>
+            <table class="table table-bordered">
+                <tr>
+                    <td colspan="3"><strong>Total Orders:</strong></td>
+                    <td colspan="2"><strong><%= totalOrdersCount %></strong></td>
+                </tr>
+                <tr>
+                    <td colspan="3"><strong>Total Amount:</strong></td>
+                    <td colspan="2"><strong>$<%= totalAmountSum.toFixed(2) %></strong></td>
+                </tr>
+                <tr>
+                    <td colspan="3"><strong>Total Discount:</strong></td>
+                    <td colspan="2"><strong>$<%= totalDiscountSum.toFixed(2) %></strong></td>
+                </tr>
+            </table>
+        <% } %>
+        <div class="pagination mt-4">
+            <% if (totalPages > 1) { %>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                <a class="page-link" href="/admin/sales?filter=<%= filter || '' %>&startDate=<%= startDate || '' %>&endDate=<%= endDate || '' %>&page=<%= i %>">
+                                    <%= i %>
+                                </a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </nav>
+            <% } %>
+        </div>
+
+        
+
+        <div class="download-options">
+            <a href="/admin/sales/download/pdf?filter=<%= filter || 'daily' %>&startDate=<%= startDate || '' %>&endDate=<%= endDate || '' %>" class="btn btn-light">Download PDF</a>
+            <a href="/admin/sales/download/excel?filter=<%= filter || 'daily' %>&startDate=<%= startDate || '' %>&endDate=<%= endDate || '' %>" class="btn btn-light">Download Excel</a>
+        </div>
+        
+        <script>
+            document.getElementById('filter').addEventListener('change', function () {
+                const customDateRange = document.getElementById('custom-date-range');
+                customDateRange.style.display = this.value === 'custom' ? 'block' : 'none';
+            });
+        </script>
+    </div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Success</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: white;
+        }
+        h1 {
+            color: #1E90FF;
+            text-align: center;
+            margin-top: 50px;
+        }
+        p {
+            text-align: center;
+            font-size: 1.2em;
+        }
+        .btn-primary {
+            background-color: #1E90FF;
+            border-color: #1E90FF;
+        }
+        .btn-primary:hover {
+            background-color: #1C7EBE;
+            border-color: #1C7EBE;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/header1') %>
+
+    <div class="container mt-5">
+        <h1>Order Placed Successfully!</h1>
+        <p>Thank you for your purchase. Your order has been placed and will be processed soon.</p>
+        <div class="text-center">
+            <a href="/" class="btn btn-primary">Go to Home</a>
+        </div>
+    </div>
+
+    <%- include('partials/footer1') %>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+

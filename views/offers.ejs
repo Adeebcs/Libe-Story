@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offers</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <%- include('partials/header1') %>
+    <div class="container mt-5">
+        <h2>Available Offers</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Coupon Code</th>
+                    <th>Discount (%)</th>
+                    <th>Valid From</th>
+                    <th>Valid Until</th>
+                    <th>Category / Product</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% coupons.forEach(coupon => { %>
+                    <tr>
+                        <td><%= coupon.code %></td>
+                        <td><%= coupon.discountPercentage %></td>
+                        <td><%= new Date(coupon.validFrom).toDateString() %></td>
+                        <td><%= new Date(coupon.validUntil).toDateString() %></td>
+                        <td>
+                            <% if (coupon.productSpecific.length > 0) { %>
+                                Products: 
+                                <ul>
+                                    <% coupon.productSpecific.forEach(product => { %>
+                                        <li><%= product.name %></li>
+                                    <% }) %>
+                                </ul>
+                            <% } else if (coupon.categorySpecific.length > 0) { %>
+                                Categories: 
+                                <ul>
+                                    <% coupon.categorySpecific.forEach(category => { %>
+                                        <li><%= category.name %></li>
+                                    <% }) %>
+                                </ul>
+                            <% } else { %>
+                                N/A
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+    <%- include('partials/footer1') %>
+</body>
+</html>

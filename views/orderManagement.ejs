@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Orders List</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f7f9fc; 
+        }
+        .header {
+            background-color: #1E90FF; 
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .table {
+            border: 2px solid #1E90FF; 
+        }
+        .thead {
+            background-color: #1E90FF; /* New background color */
+            color: white; /* Text color */
+        }
+        .thead th {
+            border-color: #1E90FF; /* Optional: match border color */
+        }
+        .btn-primary {
+            background-color: #1E90FF; 
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #1E90FF; 
+        }
+        .btn-danger {
+            background-color: #dc3545; 
+            border: none;
+        }
+        .btn-danger:hover {
+            background-color: #c82333; 
+        }
+    </style>
+</head>
+<body>
+
+<%- include('partials/header') %>
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Orders List</h1>
+    
+    <table class="table table-striped">
+        <thead class="thead">
+            <tr>
+                <th>Order ID</th>
+                <th>User</th>
+                <th>Items</th>
+                <th>Status</th>
+                <th>Total Price</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% orders.forEach(order => { %>
+                <tr>
+                    <td><%= order._id %></td>
+                    <td><%= order.user.username %></td>
+                    <td>
+                        <% order.items.forEach(item => { %>
+                            <p><%= item.book.name %> (x<%= item.quantity %>)</p>
+                        <% }); %>
+                    </td>
+                    <td><%= order.status %></td>
+                    <td>$<%= order.totalPrice.toFixed(2) %></td>
+                    <td><%= order.address.street %>, <%= order.address.city %></td>
+                    <td><%= order.phone %></td>
+                    <td>
+                        <form action="/admin/orders/update-status" method="POST">
+                            <input type="hidden" name="orderId" value="<%= order._id %>">
+                            <select name="status" class="form-control mb-2">
+                                <option value="Order Placed" <%= order.status === 'Order Placed' ? 'selected' : '' %>>Order Placed</option>
+                                <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                <option value="Returned" <%= order.status === 'Returned' ? 'selected' : '' %>>Returned</option>
+                                <option value="Return requested" <%= order.status === 'Return requested' ? 'selected' : '' %>>Return requested</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm">Update Status</button>
+                        </form>
+                        
+                        <form action="/admin/orders/cancel" method="POST" style="margin-top: 5px;">
+                            <input type="hidden" name="orderId" value="<%= order._id %>">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to cancel this order?')">Cancel Order</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+
+    
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                    <a class="page-link" href="/admin/orders?page=<%= i %>"><%= i %></a>
+                </li>
+            <% } %>
+        </ul>
+    </nav>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

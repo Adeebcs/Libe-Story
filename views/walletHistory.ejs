@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wallet History</title>
+   
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <%- include('partials/header1') %>
+
+    <div class="container my-5">
+        <h1 class="mb-4">Wallet History</h1>
+        <div style="display: flex; justify-content: flex-start; padding-left: 10px;">
+            <table class="table table-bordered text-start" 
+                   style="background-color: rgb(233, 225, 201); table-layout: auto; border: 1px solid #ccc; width: auto;">
+                <thead class="thead-blue" style="background-color: rgb(83, 146, 182);">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Transaction Type</th>
+                        <th scope="col">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% history.forEach((transaction) => { %>
+                        <tr>
+                            <td><%= new Date(transaction.createdAt).toLocaleDateString() %></td>
+                            <td><%= transaction.transactionType %></td>
+                            <td><%= transaction.amount %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+
+    <%- include('partials/footer1') %>
+
+</body>
+</html>
