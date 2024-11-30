@@ -86,7 +86,7 @@ exports.registerUser = async (req, res, next) => {
                 };
 
                
-                return res.status(200).render('otpVerification', { message: '' });
+                return res.status(200).render('otpverification', { message: '' });
             }
         });
     } catch (err) {
@@ -159,7 +159,7 @@ exports.resendOtp = async (req, res) => {
             if (error) {
                 return res.status(500).json({ message: 'Failed to resend OTP' });
             } else {
-                return res.render('otpVerification', { message: 'New OTP sent. Please check your email.' });
+                return res.render('otpverification', { message: 'New OTP sent. Please check your email.' });
             }
         });
     } catch (err) {
