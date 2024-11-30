@@ -131,7 +131,7 @@ exports.verifyOtp = async (req, res, next) => {
             return res.status(200).redirect('/home');
         } else {
          
-            return res.status(400).render('otpVerification', { message: 'Invalid OTP. Please try again.' });
+            return res.status(400).render('otpverification', { message: 'Invalid OTP. Please try again.' });
         }
     } catch (err) {
         next(err);
