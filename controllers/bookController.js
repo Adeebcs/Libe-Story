@@ -155,7 +155,7 @@ exports.getEditBookForm = async (req, res) => {
     }
 };
 
-// Edit  book
+
 exports.editBook = async (req, res) => {
     let book;
 
@@ -167,36 +167,49 @@ exports.editBook = async (req, res) => {
             return res.status(404).send('Book not found');
         }
 
+        // Validate and parse prices
         const regularPrice = parseFloat(req.body.regular_price);
         const salePrice = parseFloat(req.body.sale_price);
 
-        if (regularPrice < 0 || salePrice < 0) {
+        if (isNaN(regularPrice) || isNaN(salePrice) || regularPrice < 0 || salePrice < 0) {
             const categories = await Category.find();
             const books = await Book.find();
-            return res.render('editBook', { book, categories, books, errorMessage: 'Regular price and sale price must be non-negative.' });
+            return res.render('editBook', {
+                book,
+                categories,
+                books,
+                errorMessage: 'Regular price and sale price must be valid non-negative numbers.',
+            });
         }
 
-        book.name = req.body.name;
-        book.author = req.body.author;
-        book.chapters = req.body.chapters;
-        book.synopsis = req.body.synopsis;
+        // Update book details
+        book.name = req.body.name.trim();
+        book.author = req.body.author.trim();
+        book.chapters = req.body.chapters ? parseInt(req.body.chapters) : 0;
+        book.synopsis = req.body.synopsis.trim();
         book.regular_price = regularPrice;
         book.sale_price = salePrice;
-        book.stock = req.body.stock;
+        book.stock = req.body.stock ? parseInt(req.body.stock) : 0;
 
+        // Image processing
         const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/bmp', 'image/gif'];
         const uploadPath = '/uploads/';
 
         const processImage = async (file) => {
-            if (file && allowedImageTypes.includes(file.mimetype)) {
-                const fileName = Date.now() + path.basename(file.name);
-                const outputPath = './public' + uploadPath + fileName;
-                await sharp(file.data)
-                    .resize(600, 800)
-                    .toFile(outputPath);
-                return uploadPath + fileName;
-            } else {
-                throw new Error('Invalid image type.');
+            try {
+                if (file && allowedImageTypes.includes(file.mimetype)) {
+                    const fileName = Date.now() + path.extname(file.name);
+                    const outputPath = path.join(__dirname, '..', 'public', uploadPath, fileName);
+                    await sharp(file.data)
+                        .resize(600, 800)
+                        .toFile(outputPath);
+                    return uploadPath + fileName;
+                } else if (file) {
+                    throw new Error(`Unsupported file type: ${file.mimetype}`);
+                }
+            } catch (err) {
+                console.error('Image processing error:', err.message);
+                throw new Error('Failed to process image. Please try again.');
             }
         };
 
@@ -206,23 +219,36 @@ exports.editBook = async (req, res) => {
             if (req.files.image3) book.image3 = await processImage(req.files.image3);
         }
 
-        book.category = req.body['category[]'] || [];
-        book.related_products = req.body['related_products[]'] || [];
+        // Update categories and related products
+        book.category = Array.isArray(req.body['category[]']) ? req.body['category[]'] : [req.body['category[]']];
+        book.related_products = Array.isArray(req.body['related_products[]'])
+            ? req.body['related_products[]']
+            : [req.body['related_products[]']];
 
+        // Save book and update related categories
         await book.save();
-        await Category.updateMany(
-            { name: { $in: book.category } },
-            { $addToSet: { books: book._id } }
-        );
+
+        if (book.category.length > 0) {
+            await Category.updateMany(
+                { name: { $in: book.category } },
+                { $addToSet: { books: book._id } }
+            );
+        }
 
         res.redirect('/admin/bookManagement');
     } catch (err) {
-        console.error(err);
+        console.error('Error updating book:', err.message);
         const categories = await Category.find();
         const books = await Book.find();
-        res.render('editBook', { book, categories, books, errorMessage: err.message });
+        res.render('editBook', {
+            book: book || {}, // Ensure book is passed even if undefined
+            categories,
+            books,
+            errorMessage: err.message || 'An error occurred while updating the book.',
+        });
     }
 };
+
 
 exports.deleteBook = async (req, res) => {
     try {

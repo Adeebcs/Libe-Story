@@ -66,6 +66,16 @@ exports.addNewAddress = async (req, res, next) => {
     const userId = req.session.userId;
     const { name, house_number, street, city, state, country, postal_code } = req.body;
 
+    // Validate required fields
+    if (!name || !house_number || !street || !city || !state || !country || !postal_code) {
+        return res.status(400).send('All fields are required.');
+    }
+
+    // Validate postal code
+    if (isNaN(postal_code) || postal_code.length < 5 || postal_code.length > 10) {
+        return res.status(400).send('Postal code must be a numeric value with 5 to 10 digits.');
+    }
+
     try {
         const address = new Address({
             name,
@@ -74,7 +84,7 @@ exports.addNewAddress = async (req, res, next) => {
             city,
             state,
             country,
-            postal_code
+            postal_code,
         });
 
         await address.save();
@@ -91,6 +101,7 @@ exports.addNewAddress = async (req, res, next) => {
         next(err);
     }
 };
+
 
 
 exports.getEditAddressForm = async (req, res, next) => {
@@ -114,6 +125,11 @@ exports.updateAddress = async (req, res, next) => {
     const addressId = req.params.addressId;
     const { name, house_number, street, city, state, country, postal_code } = req.body;
 
+    // Validate postal code on server-side
+    if (!/^\d{5,10}$/.test(postal_code)) {
+        return res.status(400).send('Postal code must be a numeric value between 5 and 10 digits.');
+    }
+
     try {
         const address = await Address.findByIdAndUpdate(
             addressId,
@@ -124,7 +140,7 @@ exports.updateAddress = async (req, res, next) => {
                 city,
                 state,
                 country,
-                postal_code
+                postal_code,
             },
             { new: true }
         );
@@ -138,6 +154,7 @@ exports.updateAddress = async (req, res, next) => {
         next(err);
     }
 };
+
 
 
 exports.deleteAddress = async (req, res, next) => {
@@ -495,7 +512,7 @@ exports.orderSuccess2 = async (req, res, next) => {
 
 exports.getUserOrders = async (req, res, next) => {
     const userId = req.session.userId;
-    const sortOption = req.query.sort || '';
+    const sortOption = req.query.sort || 'dateDesc';
     const page = parseInt(req.query.page) || 1; 
     const limit = 7; 
 

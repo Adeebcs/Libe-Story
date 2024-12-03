@@ -32,53 +32,95 @@
         }
     </style>
 </head>
-<body>
-    <%- include('partials/header1') %>
-    <div class="container mt-4">
-        <h2>Add New Address</h2>
 
+    <body>
+        <%- include('partials/header1') %>
+        <div class="container mt-4">
+            <h2>Add New Address</h2>
+    
+            <form action="/settings/address/new" method="POST" class="mt-4" onsubmit="return validateAddressForm();">
+                <div id="error_msg" class="text-danger mb-3"></div>
+    
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="house_number">House Number:</label>
+                    <input type="text" id="house_number" name="house_number" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="street">Street:</label>
+                    <input type="text" id="street" name="street" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="city">City:</label>
+                    <input type="text" id="city" name="city" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="state">State:</label>
+                    <input type="text" id="state" name="state" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="country">Country:</label>
+                    <input type="text" id="country" name="country" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="postal_code">Postal Code:</label>
+                    <input type="number" id="postal_code" name="postal_code" class="form-control" required>
+                </div>
+    
+                <button type="submit" id="saveAddressButton" class="btn btn-primary">Save Address</button>
+            </form>
+    
+            <a href="/settings" class="btn btn-secondary mt-3">Back to Settings</a>
+        </div>
+        <%- include('partials/footer1') %>
+    
+        <script>
+            function validateAddressForm() {
+    const name = document.getElementById('name');
+    const houseNumber = document.getElementById('house_number');
+    const street = document.getElementById('street');
+    const city = document.getElementById('city');
+    const state = document.getElementById('state');
+    const country = document.getElementById('country');
+    const postalCode = document.getElementById('postal_code');
+    const errorMsg = document.getElementById('error_msg');
+
+    errorMsg.innerHTML = '';
+
+    // Validate required fields
+    if (
+        name.value.trim() === '' ||
+        houseNumber.value.trim() === '' ||
+        street.value.trim() === '' ||
+        city.value.trim() === '' ||
+        state.value.trim() === '' ||
+        country.value.trim() === '' ||
+        postalCode.value.trim() === ''
+    ) {
+        errorMsg.innerHTML = 'Please fill in all required fields.';
+        return false;
+    }
+
+    // Validate postal code
+    if (isNaN(postalCode.value) || postalCode.value.length < 5 || postalCode.value.length > 10) {
+        errorMsg.innerHTML = 'Postal code must be a numeric value with 5 to 10 digits.';
+        return false;
+    }
+
+    // Disable button to prevent multiple submissions
+    const saveAddressButton = document.getElementById('saveAddressButton');
+    saveAddressButton.disabled = true;
+    saveAddressButton.textContent = 'Processing...';
+
+    return true;
+}
+
+            
+        </script>
    
-        <form action="/settings/address/new" method="POST" class="mt-4">
-            <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="house_number">House Number:</label>
-                <input type="text" id="house_number" name="house_number" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-                <label for="street">Street:</label>
-                <input type="text" id="street" name="street" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-                <label for="city">City:</label>
-                <input type="text" id="city" name="city" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-                <label for="state">State:</label>
-                <input type="text" id="state" name="state" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-                <label for="country">Country:</label>
-                <input type="text" id="country" name="country" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-                <label for="postal_code">Postal Code:</label>
-                <input type="text" id="postal_code" name="postal_code" class="form-control" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Save Address</button>
-        </form>
-
-        <a href="/settings" class="btn btn-secondary mt-3">Back to Settings</a>
-    </div>
-    <%- include('partials/footer1') %>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

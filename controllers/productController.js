@@ -473,7 +473,7 @@ exports.getWishlist = async (req, res, next) => {
     }
     try {
         const wishlist = await Wishlist.findOne({ user: userId }).populate('books');
-        res.render('wishlist', { wishlist });
+        res.render('wishlist', { wishlist: wishlist || { books: [] } });
     } catch (err) {
         next(err);
     }
