@@ -169,6 +169,16 @@ exports.resendOtp = async (req, res) => {
 
 
 exports.showLoginPage = (req, res) => {
+    
+    if (req.session && req.session.userId) {
+       
+        return res.redirect('/home');
+    }
+
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+
     const { accountCreated } = req.query;
     let msg = "";
 
@@ -179,6 +189,7 @@ exports.showLoginPage = (req, res) => {
         msg = "Account created successfully. Please login.";
     }
 
+    // Render the login page with the message
     res.render('login', { msg: msg });
 };
 

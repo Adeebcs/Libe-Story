@@ -43,7 +43,7 @@ router.post('/resetPassword', authController.resetPassword);
 
 
 router.get('/home', isAuthenticated, (req, res) => {
-     
+  
     res.render('home', { message: 'Hello, World!' }); 
 });
 
